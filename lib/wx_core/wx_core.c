@@ -3,7 +3,8 @@
 #include <math.h>
 #include <stdio.h>
 
-/* rain board thresholds, measured with a spray bottle on the FC-37 pad */
+/* FC-37 rain board thresholds. Starting values, tune them for your board
+ * by dripping water on the pad and watching rain_raw. */
 #define RAIN_DRY_MIN     3000
 #define RAIN_LIGHT_MIN   1500
 

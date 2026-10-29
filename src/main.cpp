@@ -14,8 +14,8 @@
 #define PIN_LIGHT  35
 
 DHT dht(PIN_DHT, DHT22);
-// The module I have was sold as a BME280 but it is a BMP280 (chip id 0x58),
-// so humidity still comes from the DHT22.
+// A lot of cheap "BME280" boards are really BMP280 (chip id 0x58, no
+// humidity), so humidity comes from the DHT22 either way.
 Adafruit_BMP280 bmp;
 static bool bmpOk;
 
