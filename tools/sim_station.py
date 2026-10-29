@@ -28,8 +28,8 @@ def rain_level(raw):
     return "heavy"
 
 
-def make_reading(t_s, start_ts, rng, station="wx01"):
-    hour = (t_s / 3600.0) % 24
+def make_reading(t_s, start_ts, rng, station="wx01", start_hour=0.0):
+    hour = (start_hour + t_s / 3600.0) % 24
     # coldest around 5am, warmest around 3pm
     temp = 24 + 7 * math.sin((hour - 9) / 24 * 2 * math.pi) + rng.gauss(0, 0.2)
     hum = max(20.0, min(98.0, 60 - 1.8 * (temp - 24) + rng.gauss(0, 1)))
@@ -70,6 +70,9 @@ def main():
     rng = random.Random(args.seed)
     start = time.time() - args.hours * 3600 if not args.realtime else time.time()
     steps = int(args.hours * 3600 / args.interval)
+    lt = time.localtime(start)
+    # line the fake day up with the clock so the plots make sense
+    start_hour = lt.tm_hour + lt.tm_min / 60.0
 
     client = None
     if args.mqtt:
@@ -82,7 +85,7 @@ def main():
         client.loop_start()
 
     for i in range(steps):
-        r = make_reading(i * args.interval, start, rng)
+        r = make_reading(i * args.interval, start, rng, start_hour=start_hour)
         line = json.dumps(r, separators=(",", ":"))
         if client:
             client.publish("weather/%s/data" % r["id"], line)
