@@ -8,9 +8,9 @@ LDLIBS  += -lm
 
 BUILD   := build
 
-.PHONY: all test clean
+.PHONY: all test pytest clean
 
-all: $(BUILD)/test_wx_core
+all: $(BUILD)/test_wx_core $(BUILD)/wx_json
 
 $(BUILD):
 	mkdir -p $@
@@ -18,8 +18,14 @@ $(BUILD):
 $(BUILD)/test_wx_core: host_tests/test_main.c lib/wx_core/wx_core.c | $(BUILD)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
 
-test: $(BUILD)/test_wx_core
+$(BUILD)/wx_json: host/wx_json.c lib/wx_core/wx_core.c | $(BUILD)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+
+test: all
 	./$(BUILD)/test_wx_core
+
+pytest: all
+	python3 -m pytest -q tests
 
 clean:
 	rm -rf $(BUILD)
