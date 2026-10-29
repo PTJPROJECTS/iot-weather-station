@@ -1,0 +1,9 @@
+build/
+.pio/
+.vscode/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.db
+*.png
+src/secrets.h
